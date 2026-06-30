@@ -1,0 +1,17 @@
+name: BiliBili Daily Tasks
+
+on:
+  schedule:
+    # 每天UTC时间0点（北京时间早8点）运行
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  run-daily-tasks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run BiliBiliToolPro
+        uses: docker://ghcr.io/raywangqvq/bilibilitoolpro:latest
+        env:
+          BILIBILI_COOKIES: ${{ secrets.BILIBILI_COOKIES }}
+          DOTNET_ENVIRONMENT: Production
