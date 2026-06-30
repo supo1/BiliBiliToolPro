@@ -8,13 +8,29 @@ on:
 jobs:
   run-daily-tasks:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/raywangqvq/bili_tool_web:latest
-    env:
-      BiliBiliCookies__BiliBiliCookies__0: ${{ secrets.BILIBILI_COOKIES }}
-      DOTNET_ENVIRONMENT: Production
     steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Download BiliBiliToolPro
+        run: |
+          curl -L "https://github.com/RayWangQvQ/BiliBiliToolPro/releases/download/3.8.1/bilibili-tool-pro-v3.8.1-dotnet-dependent.zip" -o bilitool.zip
+          unzip bilitool.zip -d bilitool
+
+      - name: Setup Cookie
+        run: |
+          mkdir -p bilitool/dotnet-dependent
+          cat > bilitool/dotnet-dependent/cookies.json << EOF
+          {
+            "BiliBiliCookies": [
+              "${{ secrets.BILIBILI_COOKIES }}"
+            ]
+          }
+          EOF
+
       - name: Run Daily Task
         run: |
-          cd /app
+          cd bilitool/dotnet-dependent
           echo "3" | dotnet Ray.BiliBiliTool.Console.dll
