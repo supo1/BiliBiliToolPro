@@ -33,4 +33,5 @@ jobs:
       - name: Run Daily Task
         run: |
           cd bilitool/dotnet-dependent
-          echo "3" | dotnet Ray.BiliBiliTool.Console.dll
+          chmod +x Ray.BiliBiliTool.Console
+          echo "3" | ./Ray.BiliBiliTool.Console
